@@ -1,6 +1,9 @@
 from tlk.bash import executeFile
 
+from tlk.utilities import repl
+repl()
 
-executeFile('/home/qubik/vm_management/scripts/', 'clone-vm.sh', 'debian11-vm', 'vm01')
+#from tlk.custom_REPL import custom_repl
+#custom_repl()
 
 # END

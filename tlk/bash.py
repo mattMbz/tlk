@@ -1,5 +1,5 @@
-import subprocess
-import os
+import subprocess, os
+
 
 def welcome():
     print("TLK is an interface. You can use TLK to communicate python with Linux OS, through Bash, Ansible or gRPC")
@@ -24,7 +24,7 @@ def executeFile(path, filename, *params):
     for param in params:
         command.append(param)
 
-    print(command)
+    print(f'Input command: {command}')
     
     subprocess.run(command)
 ## end executeFile
