@@ -7,7 +7,7 @@ from tlk.bash import executeFile
 
 load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
-TEST_PATH=os.getenv('PATH_TO_TEST')
+# TEST_PATH=os.getenv('PATH_TO_TEST')
 
 qubik='''
 +====================================+
@@ -34,16 +34,16 @@ def custom_repl():
         if option == "1":
             print("Creatring new virtual machine")
             vm_name=input('Input your virtual machine name >> ')
-            executeFile(TEST_PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
+            executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
 
         elif option == "2":
             print("Removing virtual machine")
             vm_name=input('Input your virtual machine name >> ')
-            executeFile(TEST_PATH, 'remove-vm.sh', vm_name)
+            executeFile(PATH, 'remove-vm.sh', vm_name)
         
         elif option == "3":
             print("This feature is not implemented yet! =(")
-            executeFile(TEST_PATH, 'scr01.sh',)
+            executeFile(PATH, 'scr01.sh',)
 
         elif option == "4":
             print("This feature is not implemented yet! =(")
