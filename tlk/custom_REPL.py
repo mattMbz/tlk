@@ -9,8 +9,16 @@ load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
 TEST_PATH=os.getenv('PATH_TO_TEST')
 
+qubik='''
++====================================+
+|  Qubik Hypervisor version 1.0.0    |
+|  Author: Matias Barboza            |
++====================================+
+'''
+
 def custom_repl():
     while True:
+        print(qubik)
         # Display the menu options
         print("Menu options:")
         print("1. Create VM")
@@ -25,7 +33,8 @@ def custom_repl():
         # Evaluate the user's input
         if option == "1":
             print("Creatring new virtual machine")
-            executeFile(TEST_PATH, 'clone-vm.sh', 'debian11-vm')
+            vm_name=input('Input your virtual machine name >> ')
+            executeFile(TEST_PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
 
         elif option == "2":
             print("Removing virtual machine")
