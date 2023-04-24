@@ -1,9 +1,9 @@
-from tlk.bash import executeFile
+#from tlk.utilities import repl
+from tlk.custom_REPL import custom_repl
 
-from tlk.utilities import repl
-repl()
 
-#from tlk.custom_REPL import custom_repl
-#custom_repl()
+if __name__=='__main__':
+    #repl()
+    custom_repl()
 
 # END
