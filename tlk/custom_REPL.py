@@ -29,6 +29,7 @@ def custom_repl():
     
         # Ask the user to input an option
         option = input("Enter an option: ")
+        print()
     
         # Evaluate the user's input
         if option == "1":
@@ -43,7 +44,6 @@ def custom_repl():
         
         elif option == "3":
             print("This feature is not implemented yet! =(")
-            executeFile(PATH, 'scr01.sh',)
 
         elif option == "4":
             print("This feature is not implemented yet! =(")
