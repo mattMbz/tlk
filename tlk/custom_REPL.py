@@ -1,5 +1,5 @@
 # Python utilities
-import os
+import os, re
 from dotenv import load_dotenv
 
 # TLK imports
@@ -9,7 +9,7 @@ load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
 # TEST_PATH=os.getenv('PATH_TO_TEST')
 
-qubik='''
+header='''
 +====================================+
 |  Qubik Hypervisor version 1.0.0    |
 |  Author: Matias Barboza            |
@@ -18,7 +18,7 @@ qubik='''
 
 def custom_repl():
     while True:
-        print(qubik)
+        print(header)
         # Display the menu options
         print("Menu options:")
         print("1. Create VM")
@@ -34,13 +34,16 @@ def custom_repl():
         # Evaluate the user's input
         if option == "1":
             print("Creatring new virtual machine")
-            vm_name=input('Input your virtual machine name >> ')
-            executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
+            vm_name=input('Input the name of new VM name >> ')
+            if(vm_name!='.abort'):
+                if parse_vm_name(vm_name):
+                    executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
 
         elif option == "2":
             print("Removing virtual machine")
-            vm_name=input('Input your virtual machine name >> ')
-            executeFile(PATH, 'remove-vm.sh', vm_name)
+            vm_name=input('Input VM name to remove >> ')
+            if(vm_name!='.abort'):
+                executeFile(PATH, 'remove-vm.sh', vm_name)
         
         elif option == "3":
             print("This feature is not implemented yet! =(")
@@ -67,4 +70,17 @@ def exit_repl(response):
     if response=='n' or response =='no':
         ex=False
     return ex
-## End exit_repl function
+## End exit_repl()
+
+
+def parse_vm_name(vm_name):
+    response=False
+    vm_name=vm_name.lower()
+
+    regex = r"^(?!.*\.{2,})[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$"
+
+    if re.match(regex, vm_name):
+        response=True
+
+    return response
+## End parse_vm_name()
