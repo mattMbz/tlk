@@ -4,9 +4,11 @@ from dotenv import load_dotenv
 
 # TLK imports
 from tlk.bash import executeFile
+from tlk.virtualMachines import monitor
 
 load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
+GLOBALS_PATH=os.getenv('PATH_TO_GLOBAL')
 # TEST_PATH=os.getenv('PATH_TO_TEST')
 
 
@@ -28,7 +30,7 @@ menu='''
 def custom_repl():
     while True:
         print(menu)
-
+        executeFile(GLOBALS_PATH, 'globals.sh')
         # Ask the user to input an option
         option = input("Enter an option: ")
         print()

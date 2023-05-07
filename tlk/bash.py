@@ -3,12 +3,12 @@ import subprocess, os
 
 def welcome():
     print("TLK is an interface. You can use TLK to communicate python with Linux OS, through Bash, Ansible or gRPC")
-## end welcome()
+## end def
 
 
 def version():
     print("version 1.0.0")
-## end version()
+## end def
 
 
 def executeFile(path, filename, *params):
@@ -26,10 +26,10 @@ def executeFile(path, filename, *params):
         # catch error and show output code and error message
         print(f"code -> Output code: {error.returncode}")
         print(f"error_msg -> Error message: {error.stderr.decode()}")
-## end executeFile()
+## end def
 
 
 ## Run bash files
 def executeAllPath(path):
     pass
-## end executeAllPath
+## end def
