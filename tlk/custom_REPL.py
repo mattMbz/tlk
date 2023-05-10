@@ -22,8 +22,9 @@ menu='''
 |  3. Rename   VM                    |
 |  4. Start    VM                    |
 |  5. Shutdown VM                    |   
-|  6. Monitor                        |
-|  7. Exit                           |
+|  6. List     VM                    |
+|  7. Monitor                        |
+|  8. Exit                           |
 +====================================+
 '''
 
@@ -54,20 +55,44 @@ def custom_repl():
                 executeFile(PATH, 'remove-vm.sh', vm_name)
         
         elif option == "3":
-            print("This feature has not been implemented yet! =(")
-            vm_name=input('Input VM name>> ')
+            print("Replacing virtual machine name ...")
+            vm_name=input('Input VM name to replace >> ')
+            new_vm_name=input('Input new VM name >> ')
             print()
             if(vm_name!='.abort'):
-                executeFile(PATH, 'scr01.sh')
+                executeFile(PATH, 'rename-vm.sh', vm_name, new_vm_name)
 
         elif option == "4":
-            print("This feature is not implemented yet! =(")
+            print("Starting virtual machine ...")
+            vm_name=input('Input VM name >>')
+            print()
+            if(vm_name!='.abort'):
+                executeFile(PATH, 'start-vm.sh', vm_name)
 
         elif option == "5":
+            print("Shutting down virtual machine ...")
+            vm_name=input('Input VM name >>')
+            print()
+            if(vm_name!='.abort'):
+                executeFile(PATH, 'shutdown-vm.sh', vm_name)
+
+        elif option == "6":
+            print("Your virtual machines: ")
+            print()
+            executeFile(PATH, 'list-all.sh')
+
+        elif option == "7":
+            print("Hypervisor monitor :)")
+            vm_name=input('Input VM name >>')
+            print()
+            if(vm_name!='.abort'):
+                executeFile(PATH, 'run-monitor-vm.sh', vm_name)
+
+        elif option == "8":
             print("Goodbye!")
 
         else:
-            print("Invalid option, please enter a valid option.")
+            print("Invalid option, please enter a valid option !")
 
         response=input("Exit? (y/N): ")
         if(exit_repl(response)):
