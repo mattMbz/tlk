@@ -1,5 +1,6 @@
 scripts/
 tlk/__pycache__/
 .env
+*.swp
 
 virtualMachines.py

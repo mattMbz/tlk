@@ -4,11 +4,9 @@ from dotenv import load_dotenv
 
 # TLK imports
 from tlk.bash import executeFile
-from tlk.virtualMachines import monitor
 
 load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
-GLOBALS_PATH=os.getenv('PATH_TO_GLOBAL')
 # TEST_PATH=os.getenv('PATH_TO_TEST')
 
 
@@ -19,18 +17,21 @@ menu='''
 +====================================+
 |  Menu options:                     |
 +====================================+
-|  1. Create VM                      |
-|  2. Remove Vm                      |
-|  3. Rename Vm                      |   
-|  4. Monitor                        |
-|  5. Exit                           |
+|  1. Create   VM                    |
+|  2. Remove   VM                    |
+|  3. Rename   VM                    |
+|  4. Start    VM                    |
+|  5. Shutdown VM                    |   
+|  6. Monitor                        |
+|  7. Exit                           |
 +====================================+
 '''
+
 
 def custom_repl():
     while True:
         print(menu)
-        executeFile(GLOBALS_PATH, 'globals.sh')
+        
         # Ask the user to input an option
         option = input("Enter an option: ")
         print()
@@ -40,6 +41,7 @@ def custom_repl():
             print("Creating new virtual machine")
             vm_name=input('Input the name of new VM name >> ')
             print()
+            
             if(vm_name!='.abort'):
                 if parse_vm_name(vm_name):
                     executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
@@ -72,7 +74,7 @@ def custom_repl():
             break
         else:
             os.system('clear')
-## End custom_repl
+#End_of_def
 
 
 def exit_repl(response):
@@ -90,7 +92,7 @@ def exit_repl(response):
             ex=False
         
     return ex
-## End of exit_repl()
+#End_of_def
 
 
 def parse_vm_name(vm_name):
@@ -104,10 +106,12 @@ def parse_vm_name(vm_name):
     else:
         message(1)
     return response
-## End of parse_vm_name()
+#End_of_def
 
 
 def message(code):
     if code==1:
         print('Invalid name, try without simbols!')
-## End of parse_vm_name()
+#End_of_def
+
+## END
