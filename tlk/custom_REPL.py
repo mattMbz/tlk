@@ -7,13 +7,14 @@ from tlk.bash import executeFile
 
 load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
-# TEST_PATH=os.getenv('PATH_TO_TEST')
+#PATH=os.getenv('PATH_TO_TEST')
 
 
 menu='''
 +====================================+
 |  Qubik Hypervisor version 1.0.0    |
 |  Author: Matias Barboza            |
+|  GNU General Public License v3.0   |
 +====================================+
 |  Menu options:                     |
 +====================================+
@@ -23,8 +24,9 @@ menu='''
 |  4. Start    VM                    |
 |  5. Shutdown VM                    |   
 |  6. List     VM                    |
-|  7. Monitor                        |
-|  8. Exit                           |
+|  7. Settings VM                    |
+|  8. Monitor                        |
+|  9. Exit                           |
 +====================================+
 '''
 
@@ -43,7 +45,7 @@ def custom_repl():
             vm_name=input('Input the name of new VM name >> ')
             print()
             
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 if parse_vm_name(vm_name):
                     executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
 
@@ -51,7 +53,7 @@ def custom_repl():
             print("Removing virtual machine")
             vm_name=input('Input VM name to remove >> ')
             print()
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 executeFile(PATH, 'remove-vm.sh', vm_name)
         
         elif option == "3":
@@ -59,21 +61,21 @@ def custom_repl():
             vm_name=input('Input VM name to replace >> ')
             new_vm_name=input('Input new VM name >> ')
             print()
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 executeFile(PATH, 'rename-vm.sh', vm_name, new_vm_name)
 
         elif option == "4":
             print("Starting virtual machine ...")
             vm_name=input('Input VM name >>')
             print()
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 executeFile(PATH, 'start-vm.sh', vm_name)
 
         elif option == "5":
             print("Shutting down virtual machine ...")
             vm_name=input('Input VM name >>')
             print()
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 executeFile(PATH, 'shutdown-vm.sh', vm_name)
 
         elif option == "6":
@@ -82,19 +84,23 @@ def custom_repl():
             executeFile(PATH, 'list-all.sh')
 
         elif option == "7":
+            print("Not implemented yet =(")
+            print()
+
+        elif option == "8":
             print("Hypervisor monitor :)")
             vm_name=input('Input VM name >>')
             print()
-            if(vm_name!='.abort'):
+            if(vm_name!='.cancel'):
                 executeFile(PATH, 'run-monitor-vm.sh', vm_name)
 
-        elif option == "8":
+        elif option == "9":
             print("Goodbye!")
 
         else:
             print("Invalid option, please enter a valid option !")
 
-        response=input("Exit? (y/N): ")
+        response=input("Confirm exit? (y/N): ")
         if(exit_repl(response)):
             break
         else:
