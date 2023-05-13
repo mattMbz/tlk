@@ -1,9 +1,9 @@
 # Python utilities
-import os, re
+import os, re, inquirer
 from dotenv import load_dotenv
 
 # TLK imports
-from tlk.bash import executeFile
+from tlk.utilities.bash import executeFile
 
 load_dotenv()
 #PATH=os.getenv('PATH_TO_SCRIPT')
@@ -14,7 +14,6 @@ class CustomMenu():
 
     def __init__(self) -> None:
         self.input = MenuInput()
-        self.output = MenuOutput()
     #End_def
 
     def show(self, header, items):
@@ -37,6 +36,7 @@ class CustomMenu():
 
             print("+====================================+")
             
+            #Write your code here ...
             self.input.starts()
 
             response=input("Confirm exit? (y/N): ")
@@ -53,9 +53,9 @@ class CustomMenu():
         if re.match(default_regex, response):
             ex=False
         else:
-            if response=='n' or response =='no':
+            if response == 'n' or response == 'no':
                 ex=False
-            elif response=='y' or response == 'yes':
+            elif response == 'y' or response == 'yes':
                 ex=True
             else:
                 ex=False
@@ -87,11 +87,97 @@ class Process():
         # Option 1 is when we want create new virtual machine
         if option == "1":
             print("Creating new virtual machine")
-            vm_name=input('Input the name of new VM name >> ')
-            self.output.starts(vm_name)
+            questions = [inquirer.Text('input', message="Input the name of new VM")]
+            answers = inquirer.prompt(questions)
+            vm_name = answers['input']
+            
             if(vm_name!='.cancel'):
                 if self.parse_vm_name(vm_name):
                     executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
+            self.output.starts(vm_name)
+        
+        elif option == "2":
+            print("Removing virtual machine")
+            questions = [inquirer.Text('input', message="Input VM name to remove")]
+            
+            answers = inquirer.prompt(questions)
+            vm_name = answers['input']
+            print()
+            if(vm_name!='.cancel'):
+                executeFile(PATH, 'remove-vm.sh', vm_name)
+        
+        elif option == "3":
+            print("Replacing virtual machine name ...")
+            questions = [
+                inquirer.Text('vm_name', message="Input VM name to replace"),
+                inquirer.Text('new_vm_name', message="Input new VM name")
+            ]
+            answers = inquirer.prompt(questions)
+            vm_name = answers['vm_name']
+            new_vm_name = answers['new_vm_name']
+            print()
+
+            if(vm_name != '.cancel'):
+                executeFile(PATH, 'rename-vm.sh', vm_name, new_vm_name)
+
+        elif option == "4":
+            print("Starting virtual machine ...")
+            questions = [inquirer.Text('vm_name', message="Input VM name")]
+            answers = inquirer.prompt(questions)
+            vm_name = answers['vm_name']
+            print()
+
+            if(vm_name != '.cancel'):
+                executeFile(PATH, 'start-vm.sh', vm_name)
+
+        elif option == "5":
+            print("Shutting down virtual machine ...")
+            questions = [
+                inquirer.List(
+                    'option', 
+                    message="Select any option",
+                    choices=['Debian11-vm', 'vm01', 'guarani3.16']
+                ),
+            ]
+            answers = inquirer.prompt(questions)
+            selected_options = answers['option']
+            print(f"has seleccionado {selected_options}")
+            print()
+            if(selected_options!='Cancel'):
+                executeFile(PATH, 'shutdown-vm.sh', selected_options)
+
+        elif option == "6":
+            print("Your virtual machines: ")
+            print()
+            executeFile(PATH, 'list-all.sh')
+
+        elif option == "7":
+            questions = [
+                inquirer.List(
+                    'option', 
+                    message="Select any option",
+                    choices=['RAM', 'CPU', 'DISK', 'Cancel']
+                ),
+            ]
+            answers = inquirer.prompt(questions)
+            selected_options = answers['option']
+            print(f"has seleccionado {selected_options}")
+
+        elif option == "8":
+            print("Hypervisor monitor :)")
+            questions = [inquirer.Text('input', message="Input VM name")]
+            answers = inquirer.prompt(questions)
+            vm_name = answers['input']
+            print()
+
+            if(vm_name != '.cancel'):
+                executeFile(PATH, 'run-monitor-vm.sh', vm_name)
+
+        elif option == "9":
+            print("Goodbye!")
+
+        else:
+            print("Invalid option, please enter a valid option !")
     #End_def
 
     def parse_vm_name(self, vm_name):
