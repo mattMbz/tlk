@@ -154,14 +154,38 @@ class Process():
         elif option == "7":
             questions = [
                 inquirer.List(
-                    'option', 
+                    'resource', 
                     message="Select any option",
-                    choices=['RAM', 'CPU', 'DISK', 'Cancel']
+                    choices=['RAM', 'CPU', 'Cancel']
                 ),
+                inquirer.List(
+                    'vm',
+                    message="Select your virtual machine",
+                    choices=['Debian11-vm', 'vm01', 'guarani3.16', 'Cancel']
+                )
             ]
+
             answers = inquirer.prompt(questions)
-            selected_options = answers['option']
-            print(f"has seleccionado {selected_options}")
+            resource = answers['resource']
+            vmToConfig= answers['vm']
+
+            if resource == 'RAM':
+                choiceValues = ['512 M','768 M','1 G', '2 G']
+            elif resource == 'CPU':
+                choiceValues = ['1 vCPU', '2 vCPU', '4 vCPU']
+
+            if (resource != 'Cancel') and (vmToConfig != 'Cancel'):
+                questions = [
+                    inquirer.List(
+                        'option',
+                        message=f'Select {resource}',
+                        choices=choiceValues
+                    )
+                ]
+                answers = inquirer.prompt(questions)
+                selected = answers['option']
+                print(f'Values {vmToConfig} -> {selected}')
+                executeFile(PATH, f'config-{resource}.sh', vmToConfig, selected.split(' ')[0])
 
         elif option == "8":
             print("Hypervisor monitor :)")
@@ -175,7 +199,7 @@ class Process():
 
         elif option == "9":
             print("Goodbye!")
-
+        
         else:
             print("Invalid option, please enter a valid option !")
     #End_def
