@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from tlk.utilities.bash import executeFile
 
 load_dotenv()
-#PATH=os.getenv('PATH_TO_SCRIPT')
-PATH=os.getenv('PATH_TO_TEST')
+PATH=os.getenv('PATH_TO_SCRIPT')
+#PATH=os.getenv('PATH_TO_TEST')
 
 
 class CustomMenu():
@@ -91,7 +91,7 @@ class Process():
             answers = inquirer.prompt(questions)
             vm_name = answers['input']
             
-            if(vm_name!='.cancel'):
+            if(vm_name != '.cancel'):
                 if self.parse_vm_name(vm_name):
                     executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
             self.output.starts(vm_name)
