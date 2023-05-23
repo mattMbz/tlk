@@ -1,15 +1,128 @@
-import libvirt
+import libvirt, os
+import xml.etree.ElementTree as ET
 
-conn = libvirt.open('qemu:///system')
-if conn == None:
-    print('No se pudo conectar a hypervisor')
-    exit(1)
 
-# Nombre de la VM que deseamos monitorear
-vm_name = 'nombre_vm'
+class Hypervisor:
+    '''Implementing Libvirt functionalities form management virtual machines '''
 
-# Buscar la VM por su nombre
-vm = conn.lookupByName(vm_name)
-if vm == None:
-    print('No se pudo encontrar la VM')
-    exit(1)
+    def __init__(self):
+        self.conn = libvirt.open('qemu:///system')
+        if self.conn == None:
+            print('Hypervisor conection Failed!')
+            exit(1)
+    #End_def
+
+    
+    def startVM(self, vmname):
+        domain = self.conn.lookupByName(vmname)
+        domain.create()
+    #End_def
+   
+   
+    def deleteVM(self, vmname):
+        domains = self.getVirtualMachineNames()
+        
+        if vmname in domains:
+            
+            print(f'{vmname} Exists')
+            domain = self.conn.lookupByName(vmname)
+
+            if domain.state()[0] == 1: 
+                print('The VM is running. Please Turn-off first !')
+            else:
+                domain = self.conn.lookupByName(vmname)
+                domain.undefine()
+                vdiskName = self.getVDiskName(vmname)
+                storage_pool_path = '//////'
+                storage_pool = self.conn.storagePoolLookupByTargetPath(storage_pool_path)
+                storage_vol = storage_pool.storageVolLookupByName(vdiskName)
+                storage_vol.delete(0)
+                #print(disk)
+
+        else:
+            print('That VM  not exists !')    
+    #End_def
+ 
+    
+    def getVDiskName(self, vmname):
+        domain = self.conn.lookupByName(vmname)
+        xml_desc = domain.XMLDesc()
+        tree = ET.fromstring(xml_desc)
+        disk_element = tree.find(".//disk[@device='disk']")
+        disk_path = disk_element.find("source").get("file")
+        disk_name = os.path.basename(disk_path)
+
+        return disk_name
+    #End_def
+
+
+    def shutdownVM(self,vmname):
+        domain = self.conn.lookupByName(vmname)
+        domain.shutdown()
+    #End_def        
+
+
+    def listVirtualMachines(self):
+        domains = self.conn.listAllDomains()
+        vms = []
+        
+        for domain in domains:
+            state = 'off'
+            id = '-'
+            
+            if domain.state()[0]==1:
+                state = 'Runnning' 
+            
+            if domain.ID() != -1:
+                id = domain.ID() 
+ 
+            vms.append({'id': id, 'vmname': domain.name(), 'state': state})
+        
+        return vms
+    #End_def
+
+
+    def getVirtualMachineNames(self):
+        domains = self.conn.listAllDomains()
+        onlynames = [] 
+        for domain in domains:
+            onlynames.append(domain.name())
+        
+        return onlynames
+    #End_def
+    
+    
+    def getNamesOfRunningVM(self):
+        active_domains = self.conn.listDomainsID()
+        only_actives = []
+        for domain_id in active_domains:
+            domain = self.conn.lookupByID(domain_id)
+            only_actives.append(domain.name())
+
+        if len(only_actives)==0:
+            print('There are not Running Virtual Machine, press ENTER to exit!')
+        
+        only_actives.append('Cancel')
+    
+        return only_actives
+    #End_def
+            
+    
+    def getStoppedVM(self):
+        defined_domains = self.conn.listDefinedDomains()
+        only_stopped_vms = []
+        print(defined_domains)
+        defined_domains.append('Cancel')
+
+        return defined_domains
+    #End_def
+
+
+
+    def getHypervisorResources(self):
+        pass
+    #End_def
+
+#End_class        
+
+

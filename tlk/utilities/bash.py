@@ -2,7 +2,7 @@ import subprocess, os
 
 
 def welcome():
-    print("TLK is an interface. You can use TLK to communicate python with Linux OS, through Bash, Ansible or gRPC")
+    print("TLK is an interface. You can use TLK to communicate python with Linux OS, through Bash or Ansible")
 ## end def
 
 

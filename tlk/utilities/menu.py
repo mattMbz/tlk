@@ -1,9 +1,12 @@
 # Python utilities
 import os, re, inquirer
 from dotenv import load_dotenv
+from prettytable import PrettyTable
+
 
 # TLK imports
 from tlk.utilities.bash import executeFile
+from tlk.utilities.hypervisor import Hypervisor
 
 load_dotenv()
 PATH=os.getenv('PATH_TO_SCRIPT')
@@ -80,6 +83,7 @@ class Process():
 
     def __init__(self) -> None:
         self.output = MenuOutput()
+        self.qubik = Hypervisor()
     #End_def
 
     def run(self, option):
@@ -98,13 +102,15 @@ class Process():
         
         elif option == "2":
             print("Removing virtual machine")
+            print(self.qubik.getVirtualMachineNames())
             questions = [inquirer.Text('input', message="Input VM name to remove")]
             
             answers = inquirer.prompt(questions)
             vm_name = answers['input']
             print()
-            if(vm_name!='.cancel'):
-                executeFile(PATH, 'remove-vm.sh', vm_name)
+            if(vm_name!='.Cancel'):
+                self.qubik.deleteVM(vm_name)
+                #executeFile(PATH, 'remove-vm.sh', vm_name)
         
         elif option == "3":
             print("Replacing virtual machine name ...")
@@ -122,34 +128,50 @@ class Process():
 
         elif option == "4":
             print("Starting virtual machine ...")
-            questions = [inquirer.Text('vm_name', message="Input VM name")]
+            questions = [
+                inquirer.List(
+                    'option',
+                    message="Select any option",
+                    choices=self.qubik.getStoppedVM()
+                )
+            ]
             answers = inquirer.prompt(questions)
-            vm_name = answers['vm_name']
+            vm_name = answers['option']
             print()
+            print(f'has seleccionado {vm_name}')
 
-            if(vm_name != '.cancel'):
-                executeFile(PATH, 'start-vm.sh', vm_name)
+            if(vm_name != 'Cancel'):
+                #executeFile(PATH, 'start-vm.sh', vm_name)
+                self.qubik.startVM(vm_name)
 
         elif option == "5":
             print("Shutting down virtual machine ...")
             questions = [
                 inquirer.List(
-                    'option', 
+                    'option',
                     message="Select any option",
-                    choices=['Debian11-vm', 'vm01', 'guarani3.16']
+                    choices=self.qubik.getNamesOfRunningVM()
                 ),
             ]
             answers = inquirer.prompt(questions)
             selected_options = answers['option']
-            print(f"has seleccionado {selected_options}")
+            
             print()
             if(selected_options!='Cancel'):
-                executeFile(PATH, 'shutdown-vm.sh', selected_options)
-
+                #executeFile(PATH, 'shutdown-vm.sh', selected_options)
+                self.qubik.shutdownVM(selected_options)
+                
         elif option == "6":
             print("Your virtual machines: ")
             print()
-            executeFile(PATH, 'list-all.sh')
+            self.qubik = Hypervisor()
+            vm_list =  self.qubik.listVirtualMachines()
+            table = PrettyTable()
+            table.field_names = ["Id","Virtual Machine","State"]
+            for vm in vm_list:
+                table.add_row([value for value in vm.values()])
+            print(table)
+            only_names = self.qubik.getVirtualMachineNames()
 
         elif option == "7":
             questions = [
@@ -170,7 +192,7 @@ class Process():
             vmToConfig= answers['vm']
 
             if resource == 'RAM':
-                choiceValues = ['512 M','768 M','1 G', '2 G']
+                choiceValues = ['512M','768M','1G', '2G']
             elif resource == 'CPU':
                 choiceValues = ['1 vCPU', '2 vCPU', '4 vCPU']
 
@@ -221,8 +243,7 @@ class Process():
         if code==1:
             print('Invalid name, try without simbols!')
     #End_def
-
-#End_class
+#####End_class
 
 
 class MenuOutput():
@@ -234,6 +255,6 @@ class MenuOutput():
     def starts(self, option):
         print(f'The output was: {option}')
     #End_def
-#End_Class
+#####End_Class
 
 ## END
