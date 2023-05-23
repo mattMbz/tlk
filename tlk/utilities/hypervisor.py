@@ -1,6 +1,14 @@
 import libvirt, os
 import xml.etree.ElementTree as ET
 
+from dotenv import load_dotenv
+from tlk.utilities.bash import executeFile
+
+load_dotenv()
+PATH = os.getenv('PATH_TO_SCRIPT')
+PATH_TO_STORAGE_POOL = os.getenv('PATH_TO_STORAGE_POOL')
+#PATH=os.getenv('PATH_TO_TEST')
+
 
 class Hypervisor:
     '''Implementing Libvirt functionalities form management virtual machines '''
@@ -13,11 +21,20 @@ class Hypervisor:
     #End_def
 
     
+    def createNewVirtualMachine(self, vmname):
+       executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vmname)
+
+
     def startVM(self, vmname):
         domain = self.conn.lookupByName(vmname)
         domain.create()
     #End_def
    
+
+    def renameVM(self, oldname, newname):
+        executeFile(PATH, 'rename-vm.sh', oldname, newname)
+    #End_def
+
    
     def deleteVM(self, vmname):
         domains = self.getVirtualMachineNames()
@@ -33,7 +50,7 @@ class Hypervisor:
                 domain = self.conn.lookupByName(vmname)
                 domain.undefine()
                 vdiskName = self.getVDiskName(vmname)
-                storage_pool_path = '//////'
+                storage_pool_path = PATH_TO_STORAGE_POOL
                 storage_pool = self.conn.storagePoolLookupByTargetPath(storage_pool_path)
                 storage_vol = storage_pool.storageVolLookupByName(vdiskName)
                 storage_vol.delete(0)
@@ -42,8 +59,8 @@ class Hypervisor:
         else:
             print('That VM  not exists !')    
     #End_def
- 
     
+
     def getVDiskName(self, vmname):
         domain = self.conn.lookupByName(vmname)
         xml_desc = domain.XMLDesc()
@@ -112,11 +129,9 @@ class Hypervisor:
         defined_domains = self.conn.listDefinedDomains()
         only_stopped_vms = []
         print(defined_domains)
-        defined_domains.append('Cancel')
 
         return defined_domains
     #End_def
-
 
 
     def getHypervisorResources(self):

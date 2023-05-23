@@ -1,16 +1,9 @@
 # Python utilities
 import os, re, inquirer
-from dotenv import load_dotenv
 from prettytable import PrettyTable
 
-
 # TLK imports
-from tlk.utilities.bash import executeFile
 from tlk.utilities.hypervisor import Hypervisor
-
-load_dotenv()
-PATH=os.getenv('PATH_TO_SCRIPT')
-#PATH=os.getenv('PATH_TO_TEST')
 
 
 class CustomMenu():
@@ -84,6 +77,7 @@ class Process():
     def __init__(self) -> None:
         self.output = MenuOutput()
         self.qubik = Hypervisor()
+        self.keyword = '.cancel'
     #End_def
 
     def run(self, option):
@@ -95,9 +89,10 @@ class Process():
             answers = inquirer.prompt(questions)
             vm_name = answers['input']
             
-            if(vm_name != '.cancel'):
+            if(vm_name != self.keyword.lower()):
                 if self.parse_vm_name(vm_name):
-                    executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vm_name)
+                    self.qubik.createNewVirtualMachine(vm_name)
+
             self.output.starts(vm_name)
         
         elif option == "2":
@@ -108,7 +103,7 @@ class Process():
             answers = inquirer.prompt(questions)
             vm_name = answers['input']
             print()
-            if(vm_name!='.Cancel'):
+            if(vm_name!=self.keyword.lower()):
                 self.qubik.deleteVM(vm_name)
                 #executeFile(PATH, 'remove-vm.sh', vm_name)
         
@@ -123,16 +118,19 @@ class Process():
             new_vm_name = answers['new_vm_name']
             print()
 
-            if(vm_name != '.cancel'):
-                executeFile(PATH, 'rename-vm.sh', vm_name, new_vm_name)
+            if(vm_name != self.keyword.lower()):
+                self.qubik.renameVM(self)
+
 
         elif option == "4":
             print("Starting virtual machine ...")
+            choiceValues = self.qubik.getStoppedVM()
+            choiceValues.append(self.keyword)
             questions = [
                 inquirer.List(
                     'option',
                     message="Select any option",
-                    choices=self.qubik.getStoppedVM()
+                    choices=choiceValues
                 )
             ]
             answers = inquirer.prompt(questions)
@@ -140,24 +138,26 @@ class Process():
             print()
             print(f'has seleccionado {vm_name}')
 
-            if(vm_name != 'Cancel'):
+            if(vm_name != self.keyword.lower()):
                 #executeFile(PATH, 'start-vm.sh', vm_name)
                 self.qubik.startVM(vm_name)
 
         elif option == "5":
             print("Shutting down virtual machine ...")
+            choiceValues = self.qubik.getNamesOfRunningVM()
+            choiceValues.append(self.keyword)
             questions = [
                 inquirer.List(
                     'option',
                     message="Select any option",
-                    choices=self.qubik.getNamesOfRunningVM()
+                    choices=choiceValues
                 ),
             ]
             answers = inquirer.prompt(questions)
             selected_options = answers['option']
             
             print()
-            if(selected_options!='Cancel'):
+            if(selected_options != self.keyword.lower()):
                 #executeFile(PATH, 'shutdown-vm.sh', selected_options)
                 self.qubik.shutdownVM(selected_options)
                 
@@ -178,12 +178,12 @@ class Process():
                 inquirer.List(
                     'resource', 
                     message="Select any option",
-                    choices=['RAM', 'CPU', 'Cancel']
+                    choices=['RAM', 'CPU', self.keyword ]
                 ),
                 inquirer.List(
                     'vm',
                     message="Select your virtual machine",
-                    choices=['Debian11-vm', 'vm01', 'guarani3.16', 'Cancel']
+                    choices=['Debian11-vm', 'vm01', 'guarani3.16', self.keyword]
                 )
             ]
 
@@ -196,7 +196,7 @@ class Process():
             elif resource == 'CPU':
                 choiceValues = ['1 vCPU', '2 vCPU', '4 vCPU']
 
-            if (resource != 'Cancel') and (vmToConfig != 'Cancel'):
+            if (resource != self.keyword.lower()) and (vmToConfig != self.keyword.lower()):
                 questions = [
                     inquirer.List(
                         'option',
@@ -207,7 +207,7 @@ class Process():
                 answers = inquirer.prompt(questions)
                 selected = answers['option']
                 print(f'Values {vmToConfig} -> {selected}')
-                executeFile(PATH, f'config-{resource}.sh', vmToConfig, selected.split(' ')[0])
+                #executeFile(PATH, f'config-{resource}.sh', vmToConfig, selected.split(' ')[0])
 
         elif option == "8":
             print("Hypervisor monitor :)")
@@ -216,8 +216,9 @@ class Process():
             vm_name = answers['input']
             print()
 
-            if(vm_name != '.cancel'):
-                executeFile(PATH, 'run-monitor-vm.sh', vm_name)
+            if(vm_name != self.keyword.lower()):
+                pass
+                #executeFile(PATH, 'run-monitor-vm.sh', vm_name)
 
         elif option == "9":
             print("Goodbye!")
