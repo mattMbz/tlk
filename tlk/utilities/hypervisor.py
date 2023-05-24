@@ -33,21 +33,28 @@ class Hypervisor:
    
 
     def renameVM(self, oldname, newname):
-        executeFile(PATH, 'rename-vm.sh', oldname, newname)
+        '''Rename some virtual machine ''' 
+        domains = self.conn.listAllDomains()
+
+        try:
+            domain = self.conn.lookupByName(oldname)
+            domain.rename(newname)
+        except Exception as error:
+            print("ERROR: ", type(error).__name__)
     #End_def
 
    
     def deleteVM(self, vmname):
+        '''Delete some virtual machine if exists.'''
         domains = self.getVirtualMachineNames()
         
         if vmname in domains:
-            
-            print(f'{vmname} Exists')
-            domain = self.conn.lookupByName(vmname)
+           '''vnmane Exists''' 
+           domain = self.conn.lookupByName(vmname)
 
-            if domain.state()[0] == 1: 
-                print('The VM is running. Please Turn-off first !')
-            else:
+           if domain.state()[0] == 1: 
+               print('The VM is running. Please Turn-off first !')
+           else:
                 domain = self.conn.lookupByName(vmname)
                 domain.undefine()
                 vdiskName = self.getVDiskName(vmname)
@@ -55,7 +62,6 @@ class Hypervisor:
                 storage_pool = self.conn.storagePoolLookupByTargetPath(storage_pool_path)
                 storage_vol = storage_pool.storageVolLookupByName(vdiskName)
                 storage_vol.delete(0)
-                #print(disk)
 
         else:
             print('That VM  not exists !')    
@@ -75,12 +81,14 @@ class Hypervisor:
 
 
     def shutdownVM(self,vmname):
+        ''' '''
         domain = self.conn.lookupByName(vmname)
         domain.shutdown()
     #End_def        
 
 
     def listVirtualMachines(self):
+        ''' '''
         domains = self.conn.listAllDomains()
         vms = []
         
@@ -139,6 +147,4 @@ class Hypervisor:
         pass
     #End_def
 
-#End_class        
-
-
+#End_class

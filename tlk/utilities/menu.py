@@ -119,8 +119,7 @@ class Process():
             print()
 
             if(vm_name != self.keyword.lower()):
-                self.qubik.renameVM(self)
-
+                self.qubik.renameVM(vm_name, new_vm_name)
 
         elif option == "4":
             print("Starting virtual machine ...")
