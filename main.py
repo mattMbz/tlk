@@ -15,7 +15,6 @@ items = [
     'Start    VM',
     'Shutdown VM',
     'List     VM',
-    'Settings VM',
     'Monitor',
     'Exit'
 ]

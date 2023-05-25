@@ -21,8 +21,32 @@ class Hypervisor:
     #End_def
 
     
-    def createNewVirtualMachine(self, vmname):
-       executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vmname)
+    def createNewVirtualMachine(self, vmname, operating_system, resource_options):
+       
+       #executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vmname)
+       print(vmname)
+       print(operating_system)
+       print(resource_options)
+       options = {
+            'Debian Linux': { 
+                    '1': 'debianBase1_vm',
+                    '2': 'debianBase2_vm',
+                    '3': 'debianBase3_vm',
+                    '4': 'debianBase4_vm',
+                    '5': 'debianBase5_vm'
+            },
+            'Alpine Linux': {
+                    '1': 'alpine1_vm',
+                    '2': 'alpine2_vm',
+                    '3': 'alpine3_vm',
+                    '4': 'alpine4_vm',
+                    '5': 'alpine5_vm'
+            },
+       }
+
+       #print(options[operating_system][resource_options])
+       base_vm = (options[operating_system][resource_options])
+       print(f'clone-vm.sh {base_vm} {vmname}')
     #End_def
 
 

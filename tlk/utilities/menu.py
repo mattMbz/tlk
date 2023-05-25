@@ -80,20 +80,69 @@ class Process():
         self.keyword = '.cancel'
     #End_def
 
+
     def run(self, option):
 
         # Option 1 is when we want create new virtual machine
         if option == "1":
-            print("Creating new virtual machine")
-            questions = [inquirer.Text('input', message="Input the name of new VM")]
-            answers = inquirer.prompt(questions)
-            vm_name = answers['input']
             
-            if(vm_name != self.keyword.lower()):
-                if self.parse_vm_name(vm_name):
-                    self.qubik.createNewVirtualMachine(vm_name)
+            print("Creating new virtual machine")
+        
+            vm_question = [inquirer.Text('vmname',  message='Input the name of new VM')]
+            vm_answers = inquirer.prompt(vm_question)
+            virtual_machine_name = vm_answers['vmname']
+            print(virtual_machine_name)
 
-            self.output.starts(vm_name)
+            os_options  = ['Debian Linux', 'Alpine Linux']
+            os_options.append(self.keyword)
+            os_question = [inquirer.List(
+                'os',
+                message = 'Select the Operating System:',
+                choices = os_options
+            )]
+            os_answers = inquirer.prompt(os_question)
+            operating_system = os_answers['os']
+            print(operating_system)
+           
+            if operating_system != self.keyword:
+                ram_cpu_options = []
+
+                if operating_system == os_options[0]:
+                    os = os_options[0]
+                    ram_cpu_options = [
+                        f'1| {os} | 1 CPU | 512 MB (RAM) |  2 GB (Disk)',
+                        f'2| {os} | 2 CPU | 768 MB (RAM) |  4 GB (Disk)',
+                        f'3| {os} | 3 CPU | 768 MB (RAM) |  4 GB (Disk)',
+                        f'4| {os} | 4 CPU |   2 GB (RAM) |  8 GB (Disk)',
+                        f'5| {os} | 4 CPU |   4 GB (RAM) | 10 GB (Disk)',
+                    ]
+                else:
+                    os = os_options[1]
+                    ram_cpu_options = [
+                        f'1| {os} | 1 CPU | 256 MB (RAM) | 1 GB (Disk)',
+                        f'2| {os} | 2 CPU | 512 MB (RAM) | 2 GB (Disk)',
+                        f'3| {os} | 3 CPU | 512 MB (RAM) | 2 GB (Disk)',
+                        f'4| {os} | 4 CPU |   2 GB (RAM) | 4 GB (Disk)',
+                        f'5| {os} | 2 CPU |   2 GB (RAM) | 4 GB (Disk)',
+                    ]
+            
+                ram_cpu_options.append(self.keyword)
+            
+                vm_resources_question = [inquirer.List(
+                    'resources',
+                    message = 'Select CPU, RAM and Disk size:',
+                    choices = ram_cpu_options
+                )]
+                vm_resources_answers = inquirer.prompt(vm_resources_question)
+                vm_resources = vm_resources_answers['resources']
+            
+                resource_options = vm_resources.split('|')[0]
+             
+                if vm_resources != self.keyword:
+                    if self.parse_vm_name(virtual_machine_name):
+                        self.qubik.createNewVirtualMachine(virtual_machine_name, operating_system, resource_options)
+
+            # self.output.starts(vm_name)
         
         elif option == "2":
             print("Removing virtual machine")
@@ -172,43 +221,8 @@ class Process():
             print(table)
             only_names = self.qubik.getVirtualMachineNames()
 
+
         elif option == "7":
-            questions = [
-                inquirer.List(
-                    'resource', 
-                    message="Select any option",
-                    choices=['RAM', 'CPU', self.keyword ]
-                ),
-                inquirer.List(
-                    'vm',
-                    message="Select your virtual machine",
-                    choices=['Debian11-vm', 'vm01', 'guarani3.16', self.keyword]
-                )
-            ]
-
-            answers = inquirer.prompt(questions)
-            resource = answers['resource']
-            vmToConfig= answers['vm']
-
-            if resource == 'RAM':
-                choiceValues = ['512M','768M','1G', '2G']
-            elif resource == 'CPU':
-                choiceValues = ['1 vCPU', '2 vCPU', '4 vCPU']
-
-            if (resource != self.keyword.lower()) and (vmToConfig != self.keyword.lower()):
-                questions = [
-                    inquirer.List(
-                        'option',
-                        message=f'Select {resource}',
-                        choices=choiceValues
-                    )
-                ]
-                answers = inquirer.prompt(questions)
-                selected = answers['option']
-                print(f'Values {vmToConfig} -> {selected}')
-                #executeFile(PATH, f'config-{resource}.sh', vmToConfig, selected.split(' ')[0])
-
-        elif option == "8":
             print("Hypervisor monitor :)")
             questions = [inquirer.Text('input', message="Input VM name")]
             answers = inquirer.prompt(questions)
@@ -219,7 +233,7 @@ class Process():
                 pass
                 #executeFile(PATH, 'run-monitor-vm.sh', vm_name)
 
-        elif option == "9":
+        elif option == "8":
             print("Goodbye!")
         
         else:
