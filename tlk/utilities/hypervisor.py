@@ -1,7 +1,8 @@
+# Python Utitlities
 import libvirt, os
-import xml.etree.ElementTree as ET
-
 from dotenv import load_dotenv
+
+# TLK imports
 from tlk.utilities.bash import executeFile
 
 load_dotenv()
@@ -91,28 +92,10 @@ class Hypervisor:
            if domain.state()[0] == 1: 
                print('The VM is running. Please Turn-off first !')
            else:
-                domain = self.conn.lookupByName(vmname)
-                domain.undefine()
-                vdiskName = self.getVDiskName(vmname)
-                storage_pool_path = PATH_TO_STORAGE_POOL
-                storage_pool = self.conn.storagePoolLookupByTargetPath(storage_pool_path)
-                storage_vol = storage_pool.storageVolLookupByName(vdiskName)
-                storage_vol.delete(0)
+                executeFile(PATH, 'remove-vm.sh', vmname)
 
         else:
             print('That VM  not exists !')    
-    #End_def
-    
-
-    def getVDiskName(self, vmname):
-        domain = self.conn.lookupByName(vmname)
-        xml_desc = domain.XMLDesc()
-        tree = ET.fromstring(xml_desc)
-        disk_element = tree.find(".//disk[@device='disk']")
-        disk_path = disk_element.find("source").get("file")
-        disk_name = os.path.basename(disk_path)
-
-        return disk_name
     #End_def
 
 
