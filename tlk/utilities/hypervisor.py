@@ -7,7 +7,6 @@ from tlk.utilities.bash import executeFile
 load_dotenv()
 PATH = os.getenv('PATH_TO_SCRIPT')
 PATH_TO_STORAGE_POOL = os.getenv('PATH_TO_STORAGE_POOL')
-#PATH=os.getenv('PATH_TO_TEST')
 
 
 class Hypervisor:
@@ -22,31 +21,44 @@ class Hypervisor:
 
     
     def createNewVirtualMachine(self, vmname, operating_system, resource_options):
-       
-       #executeFile(PATH, 'clone-vm.sh', 'debian11-vm', vmname)
-       print(vmname)
-       print(operating_system)
-       print(resource_options)
-       options = {
+       """ 
+        Create new virtual machine
+
+        Args: 
+            vmname (str): Virtual machine name
+            operating_system (str): Linux distribution
+            resource_options (str): Option number for resources (CPU, RAM and Disk)
+
+        Returns: 
+       """
+
+       clone_options = {
             'Debian Linux': { 
-                    '1': 'debianBase1_vm',
-                    '2': 'debianBase2_vm',
-                    '3': 'debianBase3_vm',
-                    '4': 'debianBase4_vm',
-                    '5': 'debianBase5_vm'
+                '1': 'debianBase-1vcpu-512mb-2gb-vm', #1 CPU | 512 MB (RAM) |  2 GB (Disk)
+                '2': 'debianBase-2vcpu-768mb-4gb-vm', #2 CPU | 768 MB (RAM) |  4 GB (Disk)
+                '3': 'debianBase-3vcpu-768mb-4gb-vm', #3 CPU | 768 MB (RAM) |  4 GB (Disk)
+                '4': 'debianBase-4vcpu-2gb-8gb-vm',   #4 CPU |   2 GB (RAM) |  8 GB (Disk)
+                '5': 'debianBase-4vcpu-4gb-10gb-vm'   #4 CPU |   4 GB (RAM) | 10 GB (Disk)
             },
             'Alpine Linux': {
-                    '1': 'alpine1_vm',
-                    '2': 'alpine2_vm',
-                    '3': 'alpine3_vm',
-                    '4': 'alpine4_vm',
-                    '5': 'alpine5_vm'
+                '1': 'alpineBase-1vcpu-256mb-1gb-vm', #1 CPU | 256 MB (RAM) | 1 GB (Disk)
+                '2': 'alpineBase-2vcpu-768mb-1gb-vm', #2 CPU | 768 MB (RAM) | 1 GB (Disk)
+                '3': 'alpineBase-3vcpu-768mb-2gb-vm', #3 CPU | 512 MB (RAM) | 2 GB (Disk)
+                '4': 'alpineBase-2vcpu-2gb-4gb-vm',   #4 CPU |   2 GB (RAM) | 4 GB (Disk)
+                '5': 'alpineBase-4vcpu-2gb-4gb-vm'    #2 CPU |   2 GB (RAM) | 4 GB (Disk)
             },
        }
 
-       #print(options[operating_system][resource_options])
-       base_vm = (options[operating_system][resource_options])
-       print(f'clone-vm.sh {base_vm} {vmname}')
+       if (operating_system=='Debian Linux' and resource_options=='2'):
+            clone_option = (clone_options[operating_system][resource_options])
+            print(f'clone.sh {clone_option} {vmname}')
+            executeFile(PATH, 'clone-vm.sh', clone_option, vmname)
+       elif (operating_system=='Alpine Linux' and resource_options=='2'):
+            clone_option = (clone_options[operating_system][resource_options])
+            print(f'clone.sh {clone_option} {vmname}')
+            executeFile(PATH, 'clone-vm.sh', clone_option, vmname)
+       else:
+            print('Not implemented yet !')
     #End_def
 
 
@@ -151,8 +163,6 @@ class Hypervisor:
 
         if len(only_actives)==0:
             print('There are not Running Virtual Machine, press ENTER to exit!')
-        
-        only_actives.append('Cancel')
     
         return only_actives
     #End_def

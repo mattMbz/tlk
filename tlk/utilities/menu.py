@@ -120,7 +120,7 @@ class Process():
                     os = os_options[1]
                     ram_cpu_options = [
                         f'1| {os} | 1 CPU | 256 MB (RAM) | 1 GB (Disk)',
-                        f'2| {os} | 2 CPU | 512 MB (RAM) | 2 GB (Disk)',
+                        f'2| {os} | 2 CPU | 768 MB (RAM) | 1 GB (Disk)',
                         f'3| {os} | 3 CPU | 512 MB (RAM) | 2 GB (Disk)',
                         f'4| {os} | 4 CPU |   2 GB (RAM) | 4 GB (Disk)',
                         f'5| {os} | 2 CPU |   2 GB (RAM) | 4 GB (Disk)',
@@ -158,17 +158,19 @@ class Process():
         
         elif option == "3":
             print("Replacing virtual machine name ...")
-            questions = [
-                inquirer.Text('vm_name', message="Input VM name to replace"),
-                inquirer.Text('new_vm_name', message="Input new VM name")
-            ]
-            answers = inquirer.prompt(questions)
-            vm_name = answers['vm_name']
-            new_vm_name = answers['new_vm_name']
-            print()
+            
+            self.show_pretty_list()
 
-            if(vm_name != self.keyword.lower()):
-                self.qubik.renameVM(vm_name, new_vm_name)
+            vm_question = [inquirer.Text('vmname',  message='Input VM name to replace')]
+            vm_answers = inquirer.prompt(vm_question)
+            virtual_machine_name = vm_answers['vmname']
+        
+            if(virtual_machine_name != self.keyword.lower()):
+                new_vm_question = [inquirer.Text('new_vm_name', message="Input new VM name")]            
+                new_vm_answers = inquirer.prompt(new_vm_question)
+                new_vm_name = new_vm_answers['new_vm_name']
+                if(new_vm_name != self.keyword.lower()):
+                    self.qubik.renameVM(virtual_machine_name, new_vm_name)
 
         elif option == "4":
             print("Starting virtual machine ...")
@@ -219,8 +221,6 @@ class Process():
             for vm in vm_list:
                 table.add_row([value for value in vm.values()])
             print(table)
-            only_names = self.qubik.getVirtualMachineNames()
-
 
         elif option == "7":
             print("Hypervisor monitor :)")
@@ -240,6 +240,7 @@ class Process():
             print("Invalid option, please enter a valid option !")
     #End_def
 
+
     def parse_vm_name(self, vm_name):
         response=False
         vm_name=vm_name.lower()
@@ -253,11 +254,23 @@ class Process():
         return response
     #End_def
 
+    def show_pretty_list(self, ):
+        self.qubik = Hypervisor()
+        vm_list =  self.qubik.listVirtualMachines()
+        table = PrettyTable()
+        table.field_names = ["Id","Virtual Machine","State"]
+        for vm in vm_list:
+            table.add_row([value for value in vm.values()])
+        print(table)
+    #End_def
+
+
     def message(self, code):
         if code==1:
             print('Invalid name, try without simbols!')
     #End_def
-#####End_class
+
+#### End_class
 
 
 class MenuOutput():
