@@ -4,17 +4,23 @@ from dotenv import load_dotenv
 
 # TLK imports
 from tlk.utilities.bash import executeFile
+from tlk.utilities.resources import Memory, Disk, CPU
 
+# Global variables and paths
 load_dotenv()
 PATH = os.getenv('PATH_TO_SCRIPT')
 PATH_TO_STORAGE_POOL = os.getenv('PATH_TO_STORAGE_POOL')
 
 
 class Hypervisor:
-    '''Implementing Libvirt functionalities form management virtual machines '''
+    '''Implementing Libvirt functionalities for managing virtual machines '''
 
     def __init__(self):
         self.conn = libvirt.open('qemu:///system')
+        self.memory = Memory()
+        self.disk = Disk()
+        self.cpu = CPU()
+
         if self.conn == None:
             print('Hypervisor conection Failed!')
             exit(1)
@@ -53,11 +59,17 @@ class Hypervisor:
        if (operating_system=='Debian Linux' and resource_options=='2'):
             clone_option = (clone_options[operating_system][resource_options])
             print(f'clone.sh {clone_option} {vmname}')
+
+            # Execute process from bash
             executeFile(PATH, 'clone-vm.sh', clone_option, vmname)
+
        elif (operating_system=='Alpine Linux' and resource_options=='2'):
             clone_option = (clone_options[operating_system][resource_options])
             print(f'clone.sh {clone_option} {vmname}')
+
+            # Execute process from bash
             executeFile(PATH, 'clone-vm.sh', clone_option, vmname)
+
        else:
             print('Not implemented yet !')
     #End_def
@@ -92,6 +104,7 @@ class Hypervisor:
            if domain.state()[0] == 1: 
                print('The VM is running. Please Turn-off first !')
            else:
+                # Execute process from bash
                 executeFile(PATH, 'remove-vm.sh', vmname)
 
         else:

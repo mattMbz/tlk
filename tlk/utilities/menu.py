@@ -7,7 +7,7 @@ from tlk.utilities.hypervisor import Hypervisor
 
 
 class CustomMenu():
-
+    ''' '''
     def __init__(self) -> None:
         self.input = MenuInput()
     #End_def
@@ -58,18 +58,22 @@ class CustomMenu():
         return ex
     #End_of_def
 
-#End_class
+#### End_class
 
 
 class MenuInput():
+    ''' '''
     def __init__(self) -> None:
         self.process = Process()
+    #End_def
     
     def starts(self):
         option = input("Enter an option: ")
+        print("\n")
         self.process.run(option)
+    #End_def
 
-#End_Class
+#### End_Class
 
 
 class Process():
@@ -214,7 +218,6 @@ class Process():
         elif option == "6":
             print("Your virtual machines: ")
             print()
-            self.qubik = Hypervisor()
             vm_list =  self.qubik.listVirtualMachines()
             table = PrettyTable()
             table.field_names = ["Id","Virtual Machine","State"]
@@ -223,15 +226,28 @@ class Process():
             print(table)
 
         elif option == "7":
-            print("Hypervisor monitor :)")
+            print(" Hypervisor monitor ")
+            print(" ===Memory============")
+            self.qubik.memory.read()
+            # print(" ===================")
+
+            print()
+            print(" ===Disk============")
+            self.qubik.disk.read()
+            print()
+
+            print(" ===CPU============")
+            self.qubik.cpu.read()
+            print()
+
             questions = [inquirer.Text('input', message="Input VM name")]
             answers = inquirer.prompt(questions)
             vm_name = answers['input']
             print()
 
             if(vm_name != self.keyword.lower()):
-                pass
-                #executeFile(PATH, 'run-monitor-vm.sh', vm_name)
+                #self.qubik.memory.read()
+                executeFile(PATH, 'run-monitor-vm.sh', vm_name)
 
         elif option == "8":
             print("Goodbye!")
@@ -253,6 +269,7 @@ class Process():
             self.message(1)
         return response
     #End_def
+
 
     def show_pretty_list(self, ):
         self.qubik = Hypervisor()
@@ -282,6 +299,7 @@ class MenuOutput():
     def starts(self, option):
         print(f'The output was: {option}')
     #End_def
-#####End_Class
+
+#### End_Class
 
 ## END
