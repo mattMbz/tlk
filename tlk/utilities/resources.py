@@ -62,10 +62,7 @@ class CPU:
 
 
         ## CPU Percentage %
-        c = 0
-        for cpu_key, cpu_value in cpu_percentages.items():
-            print(f" {cpu_key}: {cpu_value} %")
-            c+=1
+        return cpu_percentages
     #End_def
 
 ##End_Class
@@ -113,7 +110,12 @@ class Memory:
         mem_used = round(mem_available - mem_free - buffers - cached - kr - huge_page_size, 2)
 
         percentage = round( (mem_used / mem_available) * 100, 2 )
-        print(f" Used: {self.unit(mem_used)} of {self.unit(mem_available)} [{percentage}%]")
+
+        return {
+            'used': self.unit(mem_used), 
+            'available': self.unit(mem_available), 
+            'percentage': percentage
+        }
     #End_def
 
 
@@ -150,7 +152,12 @@ class Disk:
         lines = output.split('\n')
         values = lines[1].split()
 
-        print(f' Used: {values[2]} of {values[1]}  [{values[4]}]')
+        return {
+            'used': values[2],
+            'available': values[1],
+            'percentage': values[4]
+        }
+        #print(f' Used: {values[2]} of {values[1]}  [{values[4]}]')
     #End_def
 
 #End_Class

@@ -226,31 +226,29 @@ class Process():
             print(table)
 
         elif option == "7":
-            print(" Hypervisor monitor ")
             resources_rts = rts() # Creating RealTimeScreen Instance
             resources_rts.cursesWrapper()
-
-            print(" ===Memory============")
-            self.qubik.memory.read()
-            # print(" ===================")
-
-            print()
-            print(" ===Disk============")
-            self.qubik.disk.read()
+            print(" Hypervisor monitor has finished !")
             print()
 
-            print(" ===CPU============")
-            self.qubik.cpu.read()
-            print()
+            # print(" ===Memory============")
+            # self.qubik.memory.read()
+            # # print(" ===================")
 
-            questions = [inquirer.Text('input', message="Input VM name")]
-            answers = inquirer.prompt(questions)
-            vm_name = answers['input']
-            print()
+            # print()
+            # print(" ===Disk============")
+            # self.qubik.disk.read()
+            # print()
 
-            if(vm_name != self.keyword.lower()):
-                #self.qubik.memory.read()
-                executeFile(PATH, 'run-monitor-vm.sh', vm_name)
+            # print(" ===CPU============")
+            # self.qubik.cpu.read()
+            # print()
+
+            # print()
+
+            # if(vm_name != self.keyword.lower()):
+            #     #self.qubik.memory.read()
+            #     executeFile(PATH, 'run-monitor-vm.sh', vm_name)
 
         elif option == "8":
             print("Goodbye!")
