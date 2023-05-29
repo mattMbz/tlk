@@ -4,7 +4,7 @@ from prettytable import PrettyTable
 
 # TLK imports
 from tlk.utilities.hypervisor import Hypervisor
-
+from tlk.utilities.screen import RealTimeScreen as rts
 
 class CustomMenu():
     ''' '''
@@ -227,6 +227,9 @@ class Process():
 
         elif option == "7":
             print(" Hypervisor monitor ")
+            resources_rts = rts() # Creating RealTimeScreen Instance
+            resources_rts.cursesWrapper()
+
             print(" ===Memory============")
             self.qubik.memory.read()
             # print(" ===================")
