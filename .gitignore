@@ -3,10 +3,8 @@ tlk/__pycache__/
 .env
 *.swp
 
-options.py
-output.py
-progress.py
-threads.py
+pruebas/
+
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux

@@ -1,5 +1,5 @@
 # Python utilities
-import time, random, threading, curses
+import time, threading, curses
 
 # TLK imports
 from tlk.utilities.hypervisor import Hypervisor
@@ -15,10 +15,10 @@ class RealTimeScreen:
 
     def monitor_server(self, window):
         ''' '''
-        window.addstr("===CPU===\n")
 
         while not self.exit_flag.is_set():
             # Get CPU values
+            window.addstr(0, 0, "===CPU===\n")
             cpu_values = self.getCPUValues()
 
             # Clear the CPU values line

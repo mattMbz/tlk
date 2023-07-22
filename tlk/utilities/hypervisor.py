@@ -50,7 +50,7 @@ class Hypervisor:
             'Alpine Linux': {
                 '1': 'alpineBase-1vcpu-256mb-1gb-vm', #1 CPU | 256 MB (RAM) | 1 GB (Disk)
                 '2': 'alpineBase-2vcpu-768mb-1gb-vm', #2 CPU | 768 MB (RAM) | 1 GB (Disk)
-                '3': 'alpineBase-3vcpu-768mb-2gb-vm', #3 CPU | 512 MB (RAM) | 2 GB (Disk)
+                '3': 'alpineBase-2vcpu-768mb-2gb-vm', #2 CPU | 768 MB (RAM) | 2 GB (Disk)
                 '4': 'alpineBase-2vcpu-2gb-4gb-vm',   #4 CPU |   2 GB (RAM) | 4 GB (Disk)
                 '5': 'alpineBase-4vcpu-2gb-4gb-vm'    #2 CPU |   2 GB (RAM) | 4 GB (Disk)
             },
@@ -63,7 +63,7 @@ class Hypervisor:
             # Execute process from bash
             executeFile(PATH, 'clone-vm.sh', clone_option, vmname)
 
-       elif (operating_system=='Alpine Linux' and resource_options=='2'):
+       elif (operating_system=='Alpine Linux' and ( resource_options=='2' or resource_options=='3' )):
             clone_option = (clone_options[operating_system][resource_options])
             print(f'clone.sh {clone_option} {vmname}')
 

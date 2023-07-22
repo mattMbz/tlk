@@ -125,7 +125,7 @@ class Process():
                     ram_cpu_options = [
                         f'1| {os} | 1 CPU | 256 MB (RAM) | 1 GB (Disk)',
                         f'2| {os} | 2 CPU | 768 MB (RAM) | 1 GB (Disk)',
-                        f'3| {os} | 3 CPU | 512 MB (RAM) | 2 GB (Disk)',
+                        f'3| {os} | 2 CPU | 768 MB (RAM) | 2 GB (Disk)',
                         f'4| {os} | 4 CPU |   2 GB (RAM) | 4 GB (Disk)',
                         f'5| {os} | 2 CPU |   2 GB (RAM) | 4 GB (Disk)',
                     ]
